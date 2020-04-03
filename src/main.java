@@ -15,30 +15,8 @@ public class main {
 		int num = Integer.parseInt(lines.get(0));
 		System.out.println(lines.size());
 		double [][] myMatrix = new double[num][num];
-		System.out.println(lines.get(1).length()-1);
-
-		int h = 0, k = 0;
-		String temp = "";
-		for(int i = 1;i<num+1;i++)
-		{
-			for(int j = 0; j<lines.get(i).length() ;j++)
-			{
-				if(lines.get(i).toCharArray()[j]==' ')
-				{
-					myMatrix[h][k] = Double.parseDouble(temp.trim());
-					k++;
-					temp = "";
-				}
-				else
-				{
-					temp += lines.get(i).toCharArray()[j];
-				}
-			}
-			k=0;
-			h++;
-		}
+		textToMatrix(lines, myMatrix, num);
 		printMatrix(myMatrix);
-		//System.out.println(Arrays.deepToString(myMatrix).replace("], ", "]\n"));
 	}
 	public static void printMatrix(double matrix[][])
 	{
@@ -50,6 +28,29 @@ public class main {
 				System.out.print(" , ");
 			}
 			System.out.println();
+		}
+	}
+	public static void textToMatrix(List<String> lines,double matrix[][],int num)
+	{
+		int h = 0, k = 0;
+		String temp = "";
+		for(int i = 1;i<num+1;i++)
+		{
+			for(int j = 0; j<lines.get(i).length() ;j++)
+			{
+				if(lines.get(i).toCharArray()[j]==' ')
+				{
+					matrix[h][k] = Double.parseDouble(temp.trim());
+					k++;
+					temp = "";
+				}
+				else
+				{
+					temp += lines.get(i).toCharArray()[j];
+				}
+			}
+			k=0;
+			h++;
 		}
 	}
 }
