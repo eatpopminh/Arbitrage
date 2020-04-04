@@ -15,8 +15,11 @@ public class main {
 		int num = Integer.parseInt(lines.get(0));
 		System.out.println(lines.size());
 		double [][] myMatrix = new double[num][num];
+		
 		textToMatrix(lines, myMatrix, num);
 		printMatrix(myMatrix);
+		
+		
 	}
 	public static void printMatrix(double matrix[][])
 	{
