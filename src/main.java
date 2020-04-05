@@ -33,10 +33,11 @@ public class main {
 			System.out.println();
 		}
 	}
-	public static void textToMatrix(List<String> lines,double matrix[][],int num)
+	public static void textToMatrix(List<String> lines, double matrix[][], int num)
 	{
 		int h = 0, k = 0;
 		String temp = "";
+		
 		for(int i = 1;i<num+1;i++)
 		{
 			for(int j = 0; j<lines.get(i).length() ;j++)
