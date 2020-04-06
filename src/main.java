@@ -17,7 +17,8 @@ public class main {
 		double [][] myMatrix = new double[num][num];
 		
 		textToMatrix(lines, myMatrix, num);
-		printMatrix(myMatrix);
+		
+		
 		
 		
 	}
