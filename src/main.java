@@ -18,9 +18,7 @@ public class main {
 		
 		textToMatrix(lines, myMatrix, num);
 		
-		
-		
-		
+
 	}
 	public static void printMatrix(double matrix[][])
 	{
