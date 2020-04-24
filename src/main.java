@@ -20,10 +20,14 @@ public class main {
 		textToMatrix(lines, myMatrix, num);
 		printMatrix(myMatrix);
 
-		
+		//2 trade -> x^2 = 1.08 -> x = 1.03923. 
+		// 3.923% profit per trade.
 		
 		
 	}
+	
+	
+	
 	public static void printMatrix(double matrix[][])
 	{
 		for(int i = 0 ; i< matrix.length ; i++)
