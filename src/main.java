@@ -20,6 +20,9 @@ public class main {
 		textToMatrix(lines, myMatrix, num);
 		printMatrix(myMatrix);
 
+		
+		
+		
 	}
 	public static void printMatrix(double matrix[][])
 	{
