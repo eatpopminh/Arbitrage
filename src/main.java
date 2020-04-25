@@ -1,4 +1,5 @@
 //Final exam
+//Arbitrage
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,7 +22,7 @@ public class main {
 		printMatrix(myMatrix);
 
 		//2 trade -> x^2 = 1.08 -> x = 1.03923. 
-		// 3.923% profit per trade.
+		//3.923% profit per trade.
 		
 		
 	}
