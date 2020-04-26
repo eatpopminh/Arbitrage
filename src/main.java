@@ -23,7 +23,7 @@ public class main {
 
 		//2 trade -> x^2 = 1.08 -> x = 1.03923. 
 		//3.923% profit per trade.
-		
+		//Bellman-Ford Algorithm might help.
 		
 	}
 	
