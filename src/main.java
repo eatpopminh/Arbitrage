@@ -21,6 +21,9 @@ public class main {
 		int [][] paths = new int[num][num];
 		
 		textToMatrix(lines, myMatrix, num);
+		
+		double[][] matrix_OG = new double[num][num];
+		textToMatrix(lines, matrix_OG, num);
 		//printMatrix(myMatrix);
 
 		//2 trade -> x^2 = 1.08 -> x = 1.03923. 
@@ -48,26 +51,105 @@ public class main {
 		printMatrix(myMatrix);
 		printMatrix(paths);
 		
+		
+		
+		
+		ArrayList<Double> my_cycle_prices = new ArrayList<Double>();
+		ArrayList<Integer> my_cycle_paths = new ArrayList<Integer>();
+		int diagonal_index = 0;
+//		for(int i = 0 ; i <5 ; i++)
+//		{
+//			if(myMatrix[i][diagonal_index]<0)
+//			{
+//				my_cycle_prices.add(matrix_OG[i][diagonal_index]);
+//				my_cycle_paths.add(diagonal_index+2);
+//				
+//				
+//				int temp = diagonal_index+2;
+//				do
+//				{
+////					System.out.println(diagonal_index+2);
+////					System.out.println(paths[i-1][diagonal_index]);
+//				
+//					temp = min_from_colunm(temp, paths, my_cycle_prices, matrix_OG);
+//					my_cycle_paths.add(temp);
+//					
+//					System.out.println(temp);
+////					System.out.println(myMatrix[i][diagonal_index] + " " + paths[i-1][diagonal_index] + 
+////							" OG Matrix: "+ matrix_OG[i][diagonal_index]);
+//					//min_from_colunm(matrix_OG, paths, diagonal_index+2);
+//					
+//				}
+//				while(temp!=diagonal_index+2);
+//				
+//				
+//			}
+			
+			diagonal_index++;
+//		}
 //		double[][] temp = extend_shortest_path(myMatrix);
 //		printMatrix(temp);
 		
-	}
-	public static double[][] extend_shortest_path(double[][] w)
-	{
-		int n = w.length;
-		double[][] l = new double[n][n];
-		for(int i = 0 ; i < n ; i++)
-		{
-			for(int j = 0 ; j < n ; j++)
+			int[] temp_array = new int[] {6,112,0,0,0,0,0,0};
+			System.out.println("my Path from 6->: " + (paths[3][4]));
+			System.out.println("get OG number from 6->: " + myMatrix[4][4]);
+			int temp2 = Integer.MAX_VALUE;
+			for(int i = 1 ; i<num ; i++)
 			{
-				l[i][j] = Integer.MAX_VALUE;
-				for(int k = 0 ; k < n ; k++)
+				System.out.println(paths[i-1][temp_array[1]]);
+				if(paths[i][temp_array[1]] <= temp2)
 				{
-					l[i][j] = Math.min(l[i][j], l[i][k] + w[k][j]);
+					
+					temp2 = paths[i-1][temp_array[1]];
+					temp_array[2] = temp2;
 				}
+				
+			}
+			System.out.println(temp_array[0]);
+			System.out.println(temp_array[1]);
+			System.out.println(temp_array[2]);
+			
+			
+			
+			
+			
+	}
+	
+//	public static double[][] extend_shortest_path(double[][] w)
+//	{
+//		int n = w.length;
+//		double[][] l = new double[n][n];
+//		for(int i = 0 ; i < n ; i++)
+//		{
+//			for(int j = 0 ; j < n ; j++)
+//			{
+//				l[i][j] = Integer.MAX_VALUE;
+//				for(int k = 0 ; k < n ; k++)
+//				{
+//					l[i][j] = Math.min(l[i][j], l[i][k] + w[k][j]);
+//				}
+//			}
+//		}
+//		return l;
+//	}
+	public static int min_from_colunm(int num, int[][] paths, ArrayList<Double> my_cycle_prices, double[][] matrix_OG)
+	{
+		
+		int temp = Integer.MAX_VALUE;
+		int index_of_min = 0;
+		for(int i = 0 ; i<paths.length ; i++)
+		{
+			if(paths[i][num] <= temp)
+			{
+				temp = paths[i][num];
+				index_of_min = i;
 			}
 		}
-		return l;
+		//my_cycle_prices.add(matrix_OG[index_of_min][num]);
+		//System.out.println(temp);
+		return temp;
+
+		
 	}
 	public static void min_plus_multiplication(int num, double[][] myMatrix, double[] finding_min, int[][] paths)
 	{
