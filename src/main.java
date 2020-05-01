@@ -17,46 +17,89 @@ public class main {
 		List<String> lines = Files.readAllLines(Paths.get("input.txt"));
 		int num = Integer.parseInt(lines.get(0));
 //		System.out.println(lines.size());
-		double [][] myMatrix = new double[num][num];
-		int [][] paths = new int[num][num];
-		
+		double [][] myMatrix = new double[num+1][num+1];
+		int [][] paths = new int[num+1][num+1];
 		textToMatrix(lines, myMatrix, num);
 		
-		double[][] matrix_OG = new double[num][num];
+		double[][] matrix_OG = new double[num+1][num+1];
 		textToMatrix(lines, matrix_OG, num);
-		//printMatrix(myMatrix);
-
+		again(num, myMatrix, paths);
+//		printMatrix(myMatrix);
 		//2 trade -> x^2 = 1.08 -> x = 1.03923. 
 		//3.923% profit per trade.
-		
-		for(int i = 0 ; i<num ; i++)
-		{
-			for(int j = 0;j<num ;j++)
-			{
-				myMatrix[i][j] = -(Math.log(myMatrix[i][j])/Math.log(2));
-			}
-		}
-		
-		
-		double[] finding_min = new double[num+1];
-		boolean flag = true;
-		while(flag)
-		{
-			double[][] temp = myMatrix;
-			min_plus_multiplication(num, myMatrix, finding_min, paths);
-			if(temp.equals(myMatrix));
-			flag = false;
-		}
+//		for(int i = 1 ; i<=num ; i++)
+//		{
+//			for(int j = 1;j<=num ;j++)
+//			{
+//				myMatrix[i][j] = -(Math.log(myMatrix[i][j])/Math.log(2));
+//				if(myMatrix[i][j] ==-0)
+//					myMatrix[i][j]=0;
+//			}
+//		}
+//		printMatrix(myMatrix);
 		
 		printMatrix(myMatrix);
-		printMatrix(paths);
 		
 		
-		
-		
-		ArrayList<Double> my_cycle_prices = new ArrayList<Double>();
-		ArrayList<Integer> my_cycle_paths = new ArrayList<Integer>();
-		int diagonal_index = 0;
+//		boolean flag = true;
+//		int count = 1;
+//		while(flag)
+//		{
+//			count++;
+//			double[][] temp = myMatrix;
+//			min_plus_multiplication(num, myMatrix, paths);
+//			if(Arrays.equals(temp, myMatrix));
+//			{
+//				flag = false;
+//			}
+//		}
+//		System.out.println(count);
+//		boolean flag = true;
+//		while(flag)
+//		{
+//			min_plus_multiplication(num, myMatrix, paths);
+//			
+//			int temp = Integer.MAX_VALUE;
+//			for(int i = 0 ;i<300 ; i++)
+//			{
+//				Math.min(temp,paths[i][112]);
+//			}
+//			if(temp==265)
+//			{
+//				flag=false;
+//				System.out.println("done");
+//			}
+//		}
+//		min_plus_multiplication(num, myMatrix, paths);
+//		
+//		//again(num,myMatrix,paths);
+//		
+////		for(int i = 0 ;i<150 ; i++)
+////		{
+////			min_plus_multiplication(num, myMatrix,  paths);
+////		}
+//		System.out.println("min-plus mul");
+//
+//		
+//		System.out.println("-------------------------------");
+//		printMatrix(myMatrix);
+//		printMatrix(paths);
+//		System.out.println("-------------------------------");
+//		
+////		for(int i = 1 ;i<=num ; i++)
+////		{
+////			System.out.println(myMatrix[i][i] + " " + paths[i][i]);
+////		}
+//
+//		for(int i = 1 ;i<=num;i++)
+//		{
+//			System.out.println(paths[i][112]);
+//		}
+//		//System.out.println("for real"+temp12);
+//		
+//		ArrayList<Double> my_cycle_prices = new ArrayList<Double>();
+//		ArrayList<Integer> my_cycle_paths = new ArrayList<Integer>();
+//		int diagonal_index = 0;
 //		for(int i = 0 ; i <5 ; i++)
 //		{
 //			if(myMatrix[i][diagonal_index]<0)
@@ -84,37 +127,38 @@ public class main {
 //				
 //				
 //			}
-			
-			diagonal_index++;
+//			
+//			diagonal_index++;
 //		}
 //		double[][] temp = extend_shortest_path(myMatrix);
 //		printMatrix(temp);
 		
-			int[] temp_array = new int[] {6,112,0,0,0,0,0,0};
-			System.out.println("my Path from 6->: " + (paths[3][4]));
-			System.out.println("get OG number from 6->: " + myMatrix[4][4]);
-			int temp2 = Integer.MAX_VALUE;
-			for(int i = 1 ; i<num ; i++)
-			{
-				System.out.println(paths[i-1][temp_array[1]]);
-				if(paths[i][temp_array[1]] <= temp2)
-				{
-					
-					temp2 = paths[i-1][temp_array[1]];
-					temp_array[2] = temp2;
-				}
-				
-			}
-			System.out.println(temp_array[0]);
-			System.out.println(temp_array[1]);
-			System.out.println(temp_array[2]);
+//			int[] temp_array = new int[] {6,112,0,0,0,0,0,0};
+//			System.out.println("my Path from 6->: " + (paths[3][4]));
+//			System.out.println("get OG number from 6->: " + myMatrix[4][4]);
+//			
+//			int temp2 = Integer.MAX_VALUE;
+//			for(int i = 1 ; i<num ; i++)
+//			{
+//				System.out.println(paths[i-1][temp_array[1]]);
+//				if(paths[i][temp_array[1]] <= temp2)
+//				{
+//					
+//					temp2 = paths[i-1][temp_array[1]];
+//					temp_array[2] = temp2;
+//				}
+//				
+//			}
+//			System.out.println(temp_array[0]);
+//			System.out.println(temp_array[1]);
+//			System.out.println(temp_array[2]);
 			
 			
 			
 			
 			
 	}
-	
+
 //	public static double[][] extend_shortest_path(double[][] w)
 //	{
 //		int n = w.length;
@@ -139,7 +183,7 @@ public class main {
 		int index_of_min = 0;
 		for(int i = 0 ; i<paths.length ; i++)
 		{
-			if(paths[i][num] <= temp)
+			if(paths[i][num] < temp)
 			{
 				temp = paths[i][num];
 				index_of_min = i;
@@ -151,35 +195,68 @@ public class main {
 
 		
 	}
-	public static void min_plus_multiplication(int num, double[][] myMatrix, double[] finding_min, int[][] paths)
+	public static void min_plus_multiplication(int num, double[][] myMatrix, int[][] paths)
 	{
-		for(int i = 0; i<num; i++) //1
+		double[][] temp_matrix = new double[num+1][num+1];
+		int[][] temp_paths = new int[num+1][num+1];
+		for(int i = 1; i<=num; i++) //1
 		{
 			//gets me the whole row
-			for(int j = 0; j<num; j++) //1,2
+			for(int j = 1; j<=num; j++) //1,2
 			{
-				double min = Double.MAX_VALUE;
+				double min = Integer.MAX_VALUE;
 				int index = 0;
-				for(int h=0; h<num; h++)
+				for(int h=1; h<=num; h++)
 				{
-					double temp =  myMatrix[i][h] + (myMatrix[h][j]);
-					//System.out.println(temp);
+					double temp =  (myMatrix[i][h] + myMatrix[h][j]);
 					if(temp<=min)
 					{
 						min = temp;
 						index = h;
+						temp_paths[i][j] = index;
+						temp_matrix[i][j] = min;
+						
+//						paths[i][j] = index;
+//						myMatrix[i][j] = min;
 					}
-					//System.out.println(myMatrix[i][h] +" + "+ myMatrix[h][j] +" = "+ temp);
-					//finding_min[h+1] = temp;
 				}
-				paths[i][j] = index+1;
-				myMatrix[i][j] = min;
-//				int min_index = find_min(finding_min);
-//				paths[i][j] = min_index;
-				//myMatrix[i][min_index] = finding_min[min_index];
 			}
 		}
+		for(int i = 1;i<=num;i++)
+		{
+			for(int j = 1;j<=num;j++)
+			{
+				myMatrix[i][j] = temp_matrix[i][j];
+				paths[i][j] = temp_paths[i][j];
+			}
+		}
+		
 	}
+	public static void again(int num, double[][] myMatrix, int[][] paths)
+	{
+		double[] dist = new double[num+1];
+		int[] p = new int[num+1];
+		
+		for(int i = 0 ;i<num+1;i++)
+		{
+			dist[i]=Integer.MAX_VALUE;
+			p[i]=-1;
+		}
+		dist[0] = 0;
+		for (int k = 1; k < num; k++)  //iterate (vertex-1)
+            for (int u = 1; u < num+1; u++) 
+                for (int v = 1; v < num+1; v++)
+                	relax(u,v,myMatrix, dist,p);
+	}
+	 private static void relax(int u, int v, double[][] myMatrix , double[] dist, int[] p) {
+	        double weight = myMatrix[u][v];
+	        if (u == v || weight == -1) return; //no conversion
+	        weight = -Math.log(weight);
+	        if (dist[v] > dist[u] + weight) {
+	            dist[v] = dist[u] + weight;
+	            p[v] = u;
+	        }
+	    }
 	public static int find_min(double[] finding_min)
 	{
 		int index = 1;
@@ -201,6 +278,7 @@ public class main {
 	
 	public static void printMatrix(double matrix[][])
 	{
+		//start at i=1 if you dont want to see the zerosssss.
 		for(int i = 0 ; i< matrix.length ; i++)
 		{
 			for(int j = 0 ; j <matrix[i].length ;j++)
@@ -225,7 +303,7 @@ public class main {
 	}
 	public static void textToMatrix(List<String> lines, double matrix[][], int num)
 	{
-		int h = 0, k = 0;
+		int h = 1, k = 1;
 		String temp = "";
 		
 		for(int i = 1;i<num+1;i++)
@@ -243,7 +321,7 @@ public class main {
 					temp += lines.get(i).toCharArray()[j];
 				}
 			}
-			k=0;
+			k=1;
 			h++;
 		}
 	}
