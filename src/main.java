@@ -7,7 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 public class main {
 
@@ -17,30 +22,37 @@ public class main {
 		List<String> lines = Files.readAllLines(Paths.get("input.txt"));
 		int num = Integer.parseInt(lines.get(0));
 //		System.out.println(lines.size());
-		double [][] myMatrix = new double[num+1][num+1];
-		int [][] paths = new int[num+1][num+1];
-		textToMatrix(lines, myMatrix, num);
 		
-		double[][] matrix_OG = new double[num+1][num+1];
-		textToMatrix(lines, matrix_OG, num);
-		again(num, myMatrix, paths);
+		double [][] myMatrix = new double[num][num];
+		int [][] paths = new int[num+1][num+1];
+		
+		textToMatrix2(lines, myMatrix, num);
+		
+//		double[][] matrix_OG = new double[num+1][num+1];
+//		textToMatrix(lines, matrix_OG, num);
+		
 //		printMatrix(myMatrix);
 		//2 trade -> x^2 = 1.08 -> x = 1.03923. 
 		//3.923% profit per trade.
-//		for(int i = 1 ; i<=num ; i++)
-//		{
-//			for(int j = 1;j<=num ;j++)
-//			{
-//				myMatrix[i][j] = -(Math.log(myMatrix[i][j])/Math.log(2));
-//				if(myMatrix[i][j] ==-0)
-//					myMatrix[i][j]=0;
-//			}
-//		}
-//		printMatrix(myMatrix);
+		for(int i = 0 ; i<num ; i++)
+		{
+			for(int j = 0;j<num ;j++)
+			{
+				myMatrix[i][j] = -Math.log(myMatrix[i][j])/Math.log(2);
+				if(myMatrix[i][j] ==-0)
+					myMatrix[i][j]=0;
+			}
+		}
+		//printMatrix(myMatrix);
 		
-		printMatrix(myMatrix);
+		FloydWarshell(myMatrix, num);
 		
+		double[] distance = new double[num];
+		int[] path = new int[num]; 
 		
+		//FloydWarshell(myMatrix, 300);
+		//System.out.println(cycleList.size());
+		//printMatrix(myMatrix);
 //		boolean flag = true;
 //		int count = 1;
 //		while(flag)
@@ -204,22 +216,27 @@ public class main {
 			//gets me the whole row
 			for(int j = 1; j<=num; j++) //1,2
 			{
-				double min = Integer.MAX_VALUE;
-				int index = 0;
+//				double min = Integer.MAX_VALUE;
+//				int index = 0;
+				double[] array = new double[num+1];
+				fill_array(array);
 				for(int h=1; h<=num; h++)
 				{
 					double temp =  (myMatrix[i][h] + myMatrix[h][j]);
-					if(temp<=min)
-					{
-						min = temp;
-						index = h;
-						temp_paths[i][j] = index;
-						temp_matrix[i][j] = min;
-						
-//						paths[i][j] = index;
-//						myMatrix[i][j] = min;
-					}
+					array[h] = temp;
+//					if(temp<=min)
+//					{
+//						min = temp;
+//						index = h;
+//						temp_paths[i][j] = index;
+//						temp_matrix[i][j] = min;
+//						
+////						paths[i][j] = index;
+////						myMatrix[i][j] = min;
+//					}
 				}
+				//find_the_min(array, temp_matrix, temp_paths,i,j);
+				
 			}
 		}
 		for(int i = 1;i<=num;i++)
@@ -232,48 +249,22 @@ public class main {
 		}
 		
 	}
-	public static void again(int num, double[][] myMatrix, int[][] paths)
+	public static void fill_array(double[] array)
 	{
-		double[] dist = new double[num+1];
-		int[] p = new int[num+1];
-		
-		for(int i = 0 ;i<num+1;i++)
+		for(int i = 0;i<=array.length;i++)
 		{
-			dist[i]=Integer.MAX_VALUE;
-			p[i]=-1;
+			array[i] = Integer.MAX_VALUE;
 		}
-		dist[0] = 0;
-		for (int k = 1; k < num; k++)  //iterate (vertex-1)
-            for (int u = 1; u < num+1; u++) 
-                for (int v = 1; v < num+1; v++)
-                	relax(u,v,myMatrix, dist,p);
 	}
-	 private static void relax(int u, int v, double[][] myMatrix , double[] dist, int[] p) {
-	        double weight = myMatrix[u][v];
-	        if (u == v || weight == -1) return; //no conversion
-	        weight = -Math.log(weight);
-	        if (dist[v] > dist[u] + weight) {
-	            dist[v] = dist[u] + weight;
-	            p[v] = u;
-	        }
-	    }
-	public static int find_min(double[] finding_min)
-	{
-		int index = 1;
-		double temp = finding_min[1];
-		double adding_all = 0;
-		for(int i = 1 ;i<finding_min.length ;i++)
-		{
-			adding_all =- finding_min[i];
-			if(finding_min[i]<=temp)
-			{
-				temp = finding_min[i];
-				index = i;
-			}
-		}
-		//System.out.println("Adding them all up: " + adding_all);
-		return index;
-	}
+//	public static void find_the_min(double[] array, double[][] temp_matrix, int[][] paths, int i, int j)
+//	{
+//		double current_min = Integer.MAX_VALUE;
+//		for(int g = 0 ; g<array.length ; g++)
+//		{
+//			if(array[g]<=)
+//			
+//		}
+//	}
 	
 	
 	public static void printMatrix(double matrix[][])
@@ -324,5 +315,135 @@ public class main {
 			k=1;
 			h++;
 		}
+	}
+	public static void textToMatrix2(List<String> lines, double matrix[][], int num)
+	{
+		int h = 0, k = 0;
+		String temp = "";
+		
+		for(int i = 1;i<num+1;i++)
+		{
+			for(int j = 0; j<lines.get(i).length() ;j++)
+			{
+				if(lines.get(i).toCharArray()[j]==' ')
+				{
+					matrix[h][k] = Double.parseDouble(temp.trim());
+					k++;
+					temp = "";
+				}
+				else
+				{
+					temp += lines.get(i).toCharArray()[j];
+				}
+			}
+			k=0;
+			h++;
+		}
+	}
+	public static void FloydWarshell(double[][] adjMatrix, int N)
+	{
+		// cost[] and parent[] stores shortest-path
+		// (shortest-cost/shortest route) information
+		double[][] cost = new double[N][N];
+		int[][] path = new int[N][N];
+
+		// initialize cost[] and parent[]
+		for (int v = 0; v < N; v++)
+		{
+			for (int u = 0; u < N; u++)
+			{
+				// initally cost would be same as weight
+				// of the edge
+				cost[v][u] = adjMatrix[v][u];
+
+				if (v == u)
+					path[v][u] = 0;
+				else if (cost[v][u] != Integer.MAX_VALUE)
+					path[v][u] = v;
+				else
+					path[v][u] = -1;
+			}
+		}
+	
+		// run Floyd-Warshell
+		for (int k = 0; k < 4; k++)
+		{
+			for (int v = 0; v < N; v++)
+			{
+				for (int u = 0; u < N; u++)
+				{
+					// If vertex k is on the shortest path from v to u,
+					// then update the value of cost[v][u], path[v][u]
+
+					if (cost[v][k] != Integer.MAX_VALUE && cost[k][u] != Integer.MAX_VALUE && (cost[v][k] + cost[k][u] < cost[v][u]))
+					{
+						cost[v][u] = cost[v][k] + cost[k][u];
+						path[v][u] = path[k][u];
+					}
+				}
+				
+				
+				// if diagonal elements become negative, the
+				// graph contains a negative weight cycle
+//				if (cost[v][v] < 0)
+//				{
+//					System.out.println("Negative Weight Cycle Found!! index is at: " + v + " " + path[v][v]);
+//					printSolution(cost, path, N);
+//					
+//					System.out.println(cost[v][v]);
+//					
+//					return;
+//				}
+			}
+		}
+		
+		// Print the shortest path between all pairs of vertices
+		printSolution(cost, path, N);
+	}
+
+	// Function to print the shortest cost with path
+	// information between all pairs of vertices
+	private static void printSolution(double[][] cost, int[][] path, int N)
+	{
+//		for (int v = 0; v < N; v++)
+//		{
+//			for (int u = 0; u < N; u++)
+//			{
+//				System.out.print(path[v][u]);
+//				System.out.print(" ");
+//			}
+//			System.out.println();
+//		}
+		for (int v = 0; v < N; v++)
+		{
+			for (int u = 0; u < N; u++)
+			{
+				System.out.print(cost[v][u]);
+				System.out.print(" ");
+			}
+			System.out.println();
+		}
+		
+		for (int v = 0; v < N; v++)
+		{
+			for (int u = 0; u < N; u++)
+			{
+				if (u != v && path[v][u] != -1)
+				{
+					System.out.print("Shortest Path from vertex " + v +
+							" to vertex " + u + " is (" + v + " ");
+					printPath(path, v, u);
+					System.out.println(u + ")");
+				}
+			}
+		}
+	}
+	private static void printPath(int[][] path, int v, int u)
+	{
+		if (path[v][u] == v)
+			return;
+
+		printPath(path, v, path[v][u]);
+		System.out.print(path[v][u] + " ");
 	}
 }
