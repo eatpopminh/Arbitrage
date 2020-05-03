@@ -23,10 +23,10 @@ public class main {
 		int num = Integer.parseInt(lines.get(0));
 //		System.out.println(lines.size());
 		
-		double [][] myMatrix = new double[num][num];
-		int [][] paths = new int[num+1][num+1];
+		double [][] myMatrix = new double[num+1][num+1];
 		
-		textToMatrix2(lines, myMatrix, num);
+		
+		textToMatrix(lines, myMatrix, num);
 		
 //		double[][] matrix_OG = new double[num+1][num+1];
 //		textToMatrix(lines, matrix_OG, num);
@@ -34,9 +34,9 @@ public class main {
 //		printMatrix(myMatrix);
 		//2 trade -> x^2 = 1.08 -> x = 1.03923. 
 		//3.923% profit per trade.
-		for(int i = 0 ; i<num ; i++)
+		for(int i = 1 ; i<=num ; i++)
 		{
-			for(int j = 0;j<num ;j++)
+			for(int j = 1;j<=num ;j++)
 			{
 				myMatrix[i][j] = -Math.log(myMatrix[i][j])/Math.log(2);
 				if(myMatrix[i][j] ==-0)
@@ -45,10 +45,11 @@ public class main {
 		}
 		//printMatrix(myMatrix);
 		
-		FloydWarshell(myMatrix, num);
+		//FloydWarshell(myMatrix, num);
+		Floyd_Warshall(myMatrix,num);
 		
-		double[] distance = new double[num];
-		int[] path = new int[num]; 
+//		double[] distance = new double[num];
+//		int[] path = new int[num]; 
 		
 		//FloydWarshell(myMatrix, 300);
 		//System.out.println(cycleList.size());
@@ -188,6 +189,51 @@ public class main {
 //		}
 //		return l;
 //	}
+	public static void Floyd_Warshall(double[][] myMatrix, int num)
+	{
+		int[][] paths = new int[num+1][num+1];
+		
+		for(int i = 1 ; i<=num ; i++)
+			for(int j = 1 ; j <=num ; j++)
+				paths[i][j] = i;
+
+		
+		for(int k = 1 ; k <= num ; k++)
+		{
+			System.out.println("CYCLE: "+k);
+			for(int i = 1 ; i <= num ; i++) //Each Column
+			{
+				for(int j = 1 ; j <= num ; j++) //Each Row
+				{
+					if(myMatrix[i][k] + myMatrix[k][j] < myMatrix[i][j])
+					{
+						myMatrix[i][j] = myMatrix[i][k] + myMatrix[k][j];
+						paths[i][j] = k;
+					}
+				}
+			}
+			if(myMatrix[k][k]<0)
+			{
+				for(int c = 1 ; c<=num ; c++)
+				{
+				
+					System.out.println(myMatrix[c][c] + " / "+ c + " -> " + paths[c][c]);
+					int temp = 0;
+					while(c==temp)
+					{
+						
+					}
+	
+				}
+			}
+			
+			
+		}
+		
+		
+		
+		
+	}
 	public static int min_from_colunm(int num, int[][] paths, ArrayList<Double> my_cycle_prices, double[][] matrix_OG)
 	{
 		
@@ -382,7 +428,15 @@ public class main {
 					}
 				}
 				
-				
+				if(cost[v][v]<0)
+				{
+					for(int c = 0 ; c<N ; c++)
+					{
+					
+						System.out.println(cost[c][c] + " / "+ c + " -> " + cost[c][c]);
+		
+					}
+				}
 				// if diagonal elements become negative, the
 				// graph contains a negative weight cycle
 //				if (cost[v][v] < 0)
