@@ -16,8 +16,13 @@ import javax.swing.text.html.HTMLDocument.Iterator;
 
 public class main {
 	final static int INF = Integer.MAX_VALUE;
+	
+	public static ArrayList<int[][]> all_path;
+	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
+		all_path = new ArrayList<int[][]>();
+		
 		File f = new File("input.txt");
 		List<String> lines = Files.readAllLines(Paths.get("input.txt"));
 		int num = Integer.parseInt(lines.get(0));
@@ -71,10 +76,22 @@ public class main {
 									{0,INF,4,0,INF,INF},
 									{0,2,INF,-5,0,INF},	
 									{0,INF,INF,INF,6,0}};
+	
+		int[][] temp_matrix = new int[num+1][num+1];
 		
-		//ISS(myMatrix, 300);									
-		min_plus_multiplication(4, myMatrix2);
-		
+		for(int i  = 1 ; i<=num ; i++)
+			for(int j = 1 ; j<=num ; j++)
+			{
+				temp_matrix[i][j] = INF;
+				if(i==j)
+					temp_matrix[i][j] = 0;
+			}
+		min_plus_multiplication(5, myMatrix5, temp_matrix);
+		printPaths(1,2,5,num);
+//		printMatrix(temp_matrix);
+//		for(int i = 2 ; i<=num+1 ; i++)
+//			temp_matrix = min_plus_multiplication(4, myMatrix2, temp_matrix);
+//		printMatrix(temp_matrix);
 		//FloydWarshell(myMatrix3, 4);
 //		if(myMatrix2[1][4]==INF)
 //		{
@@ -395,62 +412,72 @@ public class main {
 		System.out.println(temp_paths[5][284]);
 
 	}
-	public static void min_plus_multiplication(int num, int[][] myMatrix)
+	public static void min_plus_multiplication(int num, int[][] myMatrix,int[][] temp_matrix)
 	{
-		int[][] temp_matrix = {		{0,0,0,0,0},
-									{0,0,5,6,8},
-									{0,INF,0,1,3},
-									{0,INF,5,0,2},
-									{0,INF,3,4,0} };
-		//new int[num+1][num+1];
+		
+		
+		int[][] paths = new int[num+1][num+1];
 		int[][] sol = new int[num+1][num+1];
-		
-//		for(int i  = 1 ; i<=num ; i++)
-//			for(int j = 1 ; j<=num ; j++)
-//			{
-//				temp_matrix[i][j] = INF;
-//				if(i==j)
-//					temp_matrix[i][j] = 0;
-//			}
 
-		printMatrix(myMatrix);
-		
-		
-		
-		for(int i = 1; i<=num; i++) 
+		for(int g = 1 ; g<=num ; g++)
 		{
-			for(int j = 1; j<=num; j++) 
+			for(int i = 1; i<=num; i++) 
 			{
-				int current_smallest = INF;
-				for(int k = 1; k<=num; k++)
+				for(int j = 1; j<=num; j++) 
 				{
-					if((myMatrix[k][j]!=INF && myMatrix[k][j]!=INF) && 
-							(temp_matrix[i][k]!=INF && temp_matrix[i][k]!=INF) &&
-							temp_matrix[i][k] + myMatrix[k][j] <= current_smallest)
+					int current_smallest = INF;
+					for(int k = 1; k<=num; k++)
 					{
-						current_smallest = temp_matrix[i][k] + myMatrix[k][j];
-						sol[i][j] =  current_smallest;
-						
+						if((myMatrix[k][j]!=INF && myMatrix[k][j]!=INF) && 
+								(temp_matrix[i][k]!=INF && temp_matrix[i][k]!=INF) &&
+								temp_matrix[i][k] + myMatrix[k][j] <= current_smallest)
+						{
+							current_smallest = temp_matrix[i][k] + myMatrix[k][j];
+							sol[i][j] =  current_smallest;
+							paths[i][j] = k;
+							
+						}
 					}
-										
-//					
-				}
-				if(sol[i][j]==0 && i!=j)
-					sol[i][j] = INF;
+					if(sol[i][j]==0 && i!=j)
+						sol[i][j] = INF;
+				}	
 			}
-//			for(int m = 1 ;m<=num ;m++)
-//				for(int n = 1 ;n<=num ;n++)
-//					temp_matrix[m][n] = temp_matrix2[m][n];
+			int[][] temp_to_add_allpath = new int[num+1][num+1];
+			for(int a = 1 ; a<=num ; a++)
+				for(int b = 1 ; b<=num ; b++)
+					temp_to_add_allpath[a][b] = paths[a][b];
+			all_path.add(temp_to_add_allpath);
 			
+			//Move sol to temp_matrix
+			for(int a = 1 ; a<=num ; a++)
+				for(int b = 1 ; b<=num ; b++)
+				temp_matrix[a][b] = sol[a][b];
 		}
 	
-		printMatrix(sol);
-		System.out.println("---------------------------------");
+		//printMatrix(sol);
+		for(int i = 0 ; i<all_path.size() ; i++)
+		{
+			System.out.println("------------------");
+			printMatrix(all_path.get(i));
+		}
 	
-
-
-		
+	
 	}
+	public static void printPaths(int start, int end, int steps, int num)
+	{
+		if(start==end || steps<0)
+			return;
+		int last_index = -1;
+		int[][] temp_array = new int[num+1][num+1];
+		for(int i = 0 ; i<steps ; i++)
+		{
+			temp_array = all_path.get(i);
+			
+		}
+		System.out.println(temp_array[start][end]);
+		printPaths(start, temp_array[start][end], steps-1, num);
+	}
+	
 
 	public static void printMatrix(double matrix[][])
 	{
