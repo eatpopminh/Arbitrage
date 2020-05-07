@@ -15,7 +15,7 @@ import java.util.Stack;
 import javax.swing.text.html.HTMLDocument.Iterator;
 
 public class main {
-
+	final static int INF = Integer.MAX_VALUE;
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		File f = new File("input.txt");
@@ -31,29 +31,80 @@ public class main {
 //		double[][] matrix_OG = new double[num+1][num+1];
 //		textToMatrix(lines, matrix_OG, num);
 		
-//		printMatrix(myMatrix);
+
 		//2 trade -> x^2 = 1.08 -> x = 1.03923. 
 		//3.923% profit per trade.
-		for(int i = 1 ; i<=num ; i++)
-		{
-			for(int j = 1;j<=num ;j++)
-			{
-				myMatrix[i][j] = -Math.log(myMatrix[i][j])/Math.log(2);
-				if(myMatrix[i][j] ==-0)
-					myMatrix[i][j]=0;
-			}
-		}
-		//printMatrix(myMatrix);
+//		for(int i = 1 ; i<=num ; i++)
+//			for(int j = 1;j<=num ;j++)
+//			{	
+//				myMatrix[i][j] = -Math.log(myMatrix[i][j])/Math.log(2);
+//				if(myMatrix[i][j] ==-0)
+//					myMatrix[i][j]=0;
+//			}
+
+		//min_plus_multiplication(num, myMatrix);
 		
-		//FloydWarshell(myMatrix, num);
-		Floyd_Warshall(myMatrix,num);
 		
-//		double[] distance = new double[num];
-//		int[] path = new int[num]; 
+		//From lecture
+		int[][] myMatrix2 =  {				{0,0,0,0,0},
+											{0,0,5,9,INF},
+											{0,INF,0,1,INF},
+											{0,INF,INF,0,2},
+											{0,INF,3,INF,0} };
+		//Negative CYCLE
+		int[][] myMatrix3 =  {		{0,0,0,0,0},
+									{0,0,4,INF,5},
+									{0,INF,0,INF,5},
+									{0,INF,-10,0,INF},	
+									{0,INF,INF,3,0}};
+
+		double[][] myMatrix4 = {	{0,0,0,0,0},
+									{0,1.0, 1.56766, 1.25459, 0.979015}, 
+									{0,0.637893, 1.0, 0.8003, 0.624503 },
+									{0,0.797067, 1.24953, 1.0, 0.780336 },
+									{0,1.02143, 1.60127, 1.28149, 1.0 }};
 		
-		//FloydWarshell(myMatrix, 300);
-		//System.out.println(cycleList.size());
-		//printMatrix(myMatrix);
+		//From textBook
+		int[][] myMatrix5 =  {		{0,0,0,0,0,0},
+									{0,0,3,8,INF,-4},
+									{0,INF,0,INF,1,7},
+									{0,INF,4,0,INF,INF},
+									{0,2,INF,-5,0,INF},	
+									{0,INF,INF,INF,6,0}};
+		
+		//ISS(myMatrix, 300);									
+		min_plus_multiplication(4, myMatrix2);
+		
+		//FloydWarshell(myMatrix3, 4);
+//		if(myMatrix2[1][4]==INF)
+//		{
+//			System.out.println("INF");
+//		}
+//		if(4<=INF)
+//			System.out.println("WTF");
+//		int[][] paths = new int[5][5];
+//		int[][] temp_matrix = {		{0,0,0,0,0},
+//									{0,0,5,9,INF},
+//									{0,INF,0,1,INF},
+//									{0,INF,INF,0,2},
+//									{0,INF,3,INF,0} };
+		
+//		for(int i = 1;i<=4;i++)
+//		{
+//			for(int j = 1;j<=4;j++)
+//			{
+//				temp_matrix[i][j] = INF;
+//				for(int k = 1 ; k<=4;k++)
+//				{
+//					if((temp_matrix[i][k] != INF && temp_matrix[k][j] != INF) &&
+//							(myMatrix[i][k] != INF && myMatrix[k][j] != INF))
+//					temp_matrix[i][j] = Math.min(temp_matrix[i][j], myMatrix2[i][k] + temp_matrix[k][j]);
+//				}
+//			}
+//			printMatrix(temp_matrix);
+//		}
+
+		
 //		boolean flag = true;
 //		int count = 1;
 //		while(flag)
@@ -171,148 +222,236 @@ public class main {
 			
 			
 	}
-
-//	public static double[][] extend_shortest_path(double[][] w)
-//	{
-//		int n = w.length;
-//		double[][] l = new double[n][n];
-//		for(int i = 0 ; i < n ; i++)
-//		{
-//			for(int j = 0 ; j < n ; j++)
-//			{
-//				l[i][j] = Integer.MAX_VALUE;
-//				for(int k = 0 ; k < n ; k++)
-//				{
-//					l[i][j] = Math.min(l[i][j], l[i][k] + w[k][j]);
-//				}
-//			}
-//		}
-//		return l;
-//	}
-	public static void Floyd_Warshall(double[][] myMatrix, int num)
+	public static void FloydWarshell(int[][] adjMatrix, int N)
 	{
-		int[][] paths = new int[num+1][num+1];
-		
-		for(int i = 1 ; i<=num ; i++)
-			for(int j = 1 ; j <=num ; j++)
-				paths[i][j] = i;
+		// cost[] and parent[] stores shortest-path
+		// (shortest-cost/shortest route) information
+		int[][] cost = new int[N+1][N+1];
+		int[][] path = new int[N+1][N+1];
 
-		
-		for(int k = 1 ; k <= num ; k++)
+		// initialize cost[] and parent[]
+		for (int u = 1; u <= N; u++)
 		{
-			System.out.println("CYCLE: "+k);
-			for(int i = 1 ; i <= num ; i++) //Each Column
+			for (int v = 1; v <= N; v++)
 			{
-				for(int j = 1 ; j <= num ; j++) //Each Row
-				{
-					if(myMatrix[i][k] + myMatrix[k][j] < myMatrix[i][j])
-					{
-						myMatrix[i][j] = myMatrix[i][k] + myMatrix[k][j];
-						paths[i][j] = k;
-					}
-				}
-			}
-			if(myMatrix[k][k]<0)
-			{
-				for(int c = 1 ; c<=num ; c++)
-				{
+				// initally cost would be same as weight
+				// of the edge
+				cost[u][v] = adjMatrix[u][v];
+				path[u][v] = v;
 				
-					System.out.println(myMatrix[c][c] + " / "+ c + " -> " + paths[c][c]);
-					int temp = 0;
-					while(c==temp)
+				cost[v][v] = 0;
+				path[v][v] = v;
+//				if (v == u)
+//					path[v][v] = 0;
+//				else if (cost[v][u] != Integer.MAX_VALUE)
+//					path[u][v] = v;
+//				else
+//					path[v][u] = -1;
+			}
+		}
+
+		// run Floyd-Warshell
+		for (int k = 1; k <= N; k++)
+			for (int u = 1; u <= N; u++)
+			{
+				for (int v = 1; v <= N; v++)
+				{
+					// If vertex k is on the shortest path from v to u,
+					// then update the value of cost[v][u], path[v][u]
+
+					if (cost[u][k] != INF && cost[k][v] != INF
+							&& (cost[u][k] + cost[k][v] < cost[u][v]))
 					{
-						
+						cost[u][v] = cost[u][k] + cost[k][v];
+						path[u][v] = path[u][k];
 					}
+				}
+
+				// if diagonal elements become negative, the
+				// graph contains a negative weight cycle
+//				if (cost[k][k] < 0)
+//				{
+//					System.out.println("Negative Weight Cycle Found!!");
+//					printMatrix(cost);
+//					System.out.println("------------------------------");
+//					printMatrix(path);
+//					return;
+//				}
+			}
+		printMatrix(cost);
+		System.out.println("------------------------------");
+		printMatrix(path);
+		// Print the shortest path between all pairs of vertices
+		//printSolution(cost, path, N);
+	}
+
 	
+
+	public static void ISS(double[][] myMatrix, int num)
+	{
+		double[] dist = new double[num+1];
+		int[] p = new int[num+1];
+		
+	
+		for(int j  = 1 ; j<=num;j++)
+		{
+			dist[j] = INF;
+			p[j] = -1;
+		}
+		dist[0] = 0;
+		
+		for(int i = 1; i<num; i++) //1
+		{
+			for(int j = 1; j<=num; j++) //1,2
+			{
+				for(int k = 1; k<=num; k++)
+				{
+					if(dist[k] > dist[j] + myMatrix[j][k])
+					{
+						dist[k] = dist[j] + myMatrix[j][k];
+						p[k] = j;
+					}
+					
 				}
 			}
-			
-			
 		}
 		
-		
-		
-		
-	}
-	public static int min_from_colunm(int num, int[][] paths, ArrayList<Double> my_cycle_prices, double[][] matrix_OG)
-	{
-		
-		int temp = Integer.MAX_VALUE;
-		int index_of_min = 0;
-		for(int i = 0 ; i<paths.length ; i++)
+		for(int j = 1; j<=num; j++) //1
 		{
-			if(paths[i][num] < temp)
+			for(int k = 1; k<=num; k++) //1,2
 			{
-				temp = paths[i][num];
-				index_of_min = i;
+				if(dist[k] < dist[j] + myMatrix[j][k])
+				{
+					dist[k] = -INF;
+					System.out.println("NC");
+//					for(int i = 1; i<=num;i++)
+//					{
+//						System.out.println(p[i]);
+//					}
+					//return;
+				}
 			}
 		}
-		//my_cycle_prices.add(matrix_OG[index_of_min][num]);
-		//System.out.println(temp);
-		return temp;
-
 		
+		for(int i  = 1 ; i<=num ; i++)
+		{
+			if(dist[i] == -INF)
+			{
+				backtrack(i,p,dist);
+			}
+		}
+		// printMatrix(dist);
+		 System.out.println("DONE");
 	}
-	public static void min_plus_multiplication(int num, double[][] myMatrix, int[][] paths)
+	public static void backtrack(int i, int[] path, double[] dist)
+	{
+		if(path[i]!=-1 && dist[i]!=-INF)
+		{
+			dist[path[i]] = -INF;
+			backtrack(path[i],path,dist);
+		}
+		else 
+			return;
+	}
+
+	public static void min_plus_multiplication(int num, double[][] myMatrix)
 	{
 		double[][] temp_matrix = new double[num+1][num+1];
 		int[][] temp_paths = new int[num+1][num+1];
+		
+		for(int i = 1 ; i<num ; i++)
+			for(int j = 1 ; j<=num ; j++)
+			temp_matrix[i][j] = myMatrix[i][j];
+		
 		for(int i = 1; i<=num; i++) //1
 		{
-			//gets me the whole row
 			for(int j = 1; j<=num; j++) //1,2
 			{
-//				double min = Integer.MAX_VALUE;
-//				int index = 0;
-				double[] array = new double[num+1];
-				fill_array(array);
-				for(int h=1; h<=num; h++)
+				double current_smallest = Double.MAX_VALUE;
+				for(int k = 1; k<=num; k++)
 				{
-					double temp =  (myMatrix[i][h] + myMatrix[h][j]);
-					array[h] = temp;
-//					if(temp<=min)
-//					{
-//						min = temp;
-//						index = h;
-//						temp_paths[i][j] = index;
-//						temp_matrix[i][j] = min;
-//						
-////						paths[i][j] = index;
-////						myMatrix[i][j] = min;
-//					}
+					if(temp_matrix[i][k] + myMatrix[k][j] <= current_smallest)
+					{
+						current_smallest = temp_matrix[i][k] + myMatrix[k][j];
+						
+						temp_matrix[i][j] = current_smallest;
+						temp_paths[i][j] = k;
+					}
+					
 				}
-				//find_the_min(array, temp_matrix, temp_paths,i,j);
-				
 			}
 		}
-		for(int i = 1;i<=num;i++)
+	
+//		printMatrix(temp_matrix);
+//		printMatrix(temp_paths);
+		System.out.println(temp_paths[5][5]);
+		System.out.println(temp_paths[5][217]);
+		System.out.println(temp_paths[5][241]);
+		System.out.println(temp_paths[5][281]);
+		System.out.println(temp_paths[5][284]);
+		System.out.println(temp_paths[5][299]);
+		System.out.println(temp_paths[5][19]);
+		System.out.println(temp_paths[5][270]);
+		System.out.println(temp_paths[5][284]);
+
+	}
+	public static void min_plus_multiplication(int num, int[][] myMatrix)
+	{
+		int[][] temp_matrix = {		{0,0,0,0,0},
+									{0,0,5,6,8},
+									{0,INF,0,1,3},
+									{0,INF,5,0,2},
+									{0,INF,3,4,0} };
+		//new int[num+1][num+1];
+		int[][] sol = new int[num+1][num+1];
+		
+//		for(int i  = 1 ; i<=num ; i++)
+//			for(int j = 1 ; j<=num ; j++)
+//			{
+//				temp_matrix[i][j] = INF;
+//				if(i==j)
+//					temp_matrix[i][j] = 0;
+//			}
+
+		printMatrix(myMatrix);
+		
+		
+		
+		for(int i = 1; i<=num; i++) 
 		{
-			for(int j = 1;j<=num;j++)
+			for(int j = 1; j<=num; j++) 
 			{
-				myMatrix[i][j] = temp_matrix[i][j];
-				paths[i][j] = temp_paths[i][j];
+				int current_smallest = INF;
+				for(int k = 1; k<=num; k++)
+				{
+					if((myMatrix[k][j]!=INF && myMatrix[k][j]!=INF) && 
+							(temp_matrix[i][k]!=INF && temp_matrix[i][k]!=INF) &&
+							temp_matrix[i][k] + myMatrix[k][j] <= current_smallest)
+					{
+						current_smallest = temp_matrix[i][k] + myMatrix[k][j];
+						sol[i][j] =  current_smallest;
+						
+					}
+										
+//					
+				}
+				if(sol[i][j]==0 && i!=j)
+					sol[i][j] = INF;
 			}
+//			for(int m = 1 ;m<=num ;m++)
+//				for(int n = 1 ;n<=num ;n++)
+//					temp_matrix[m][n] = temp_matrix2[m][n];
+			
 		}
+	
+		printMatrix(sol);
+		System.out.println("---------------------------------");
+	
+
+
 		
 	}
-	public static void fill_array(double[] array)
-	{
-		for(int i = 0;i<=array.length;i++)
-		{
-			array[i] = Integer.MAX_VALUE;
-		}
-	}
-//	public static void find_the_min(double[] array, double[][] temp_matrix, int[][] paths, int i, int j)
-//	{
-//		double current_min = Integer.MAX_VALUE;
-//		for(int g = 0 ; g<array.length ; g++)
-//		{
-//			if(array[g]<=)
-//			
-//		}
-//	}
-	
-	
+
 	public static void printMatrix(double matrix[][])
 	{
 		//start at i=1 if you dont want to see the zerosssss.
