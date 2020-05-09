@@ -18,11 +18,22 @@ public class main {
 	final static int INF = Integer.MAX_VALUE;
 	
 	public static ArrayList<int[][]> all_path;
-	public static ArrayList<int[][]> list_of_cycle;
-	public static int[] profit_per_trade;
+	public static ArrayList<int[]> all_list_of_cycle;
+	public static ArrayList<Integer> temp_list_of_cycle;
+	public static ArrayList<Integer> profit_per_trade;
+	public static int[][] OG_matrix = {		{0,0,0,0,0},
+											{0,0,5,2,INF},
+											{0,-8,0,1,INF},
+											{0,INF,INF,0,-5},
+											{0,INF,3,INF,0} };
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		all_path = new ArrayList<int[][]>();
+		all_list_of_cycle = new ArrayList<int[]>();
+		temp_list_of_cycle = new ArrayList<Integer>();
+		profit_per_trade = new ArrayList<Integer>();
+		
+		
 		
 		File f = new File("input.txt");
 		List<String> lines = Files.readAllLines(Paths.get("input.txt"));
@@ -34,10 +45,11 @@ public class main {
 		
 		textToMatrix(lines, myMatrix, num);
 		
-//		double[][] matrix_OG = new double[num+1][num+1];
-//		textToMatrix(lines, matrix_OG, num);
-		
 
+		//OG_matrix = new int[num+1][num+1];
+		//textToMatrix(lines, OG_matrix, num);
+		
+		
 		//2 trade -> x^2 = 1.08 -> x = 1.03923. 
 		//3.923% profit per trade.
 		for(int i = 1 ; i<=num ; i++)
@@ -95,6 +107,7 @@ public class main {
 									{0,-8,0,1,INF},
 									{0,INF,INF,0,-5},
 									{0,INF,3,INF,0} };
+
 	
 		int[][] temp_matrix = new int[num+1][num+1];
 		
@@ -275,70 +288,6 @@ public class main {
 			
 			
 	}
-	public static void FloydWarshell(int[][] adjMatrix, int N)
-	{
-		// cost[] and parent[] stores shortest-path
-		// (shortest-cost/shortest route) information
-		int[][] cost = new int[N+1][N+1];
-		int[][] path = new int[N+1][N+1];
-
-		// initialize cost[] and parent[]
-		for (int u = 1; u <= N; u++)
-		{
-			for (int v = 1; v <= N; v++)
-			{
-				// initally cost would be same as weight
-				// of the edge
-				cost[u][v] = adjMatrix[u][v];
-				path[u][v] = v;
-				
-				cost[v][v] = 0;
-				path[v][v] = v;
-//				if (v == u)
-//					path[v][v] = 0;
-//				else if (cost[v][u] != Integer.MAX_VALUE)
-//					path[u][v] = v;
-//				else
-//					path[v][u] = -1;
-			}
-		}
-
-		// run Floyd-Warshell
-		for (int k = 1; k <= N; k++)
-			for (int u = 1; u <= N; u++)
-			{
-				for (int v = 1; v <= N; v++)
-				{
-					// If vertex k is on the shortest path from v to u,
-					// then update the value of cost[v][u], path[v][u]
-
-					if (cost[u][k] != INF && cost[k][v] != INF
-							&& (cost[u][k] + cost[k][v] < cost[u][v]))
-					{
-						cost[u][v] = cost[u][k] + cost[k][v];
-						path[u][v] = path[u][k];
-					}
-				}
-
-				// if diagonal elements become negative, the
-				// graph contains a negative weight cycle
-//				if (cost[k][k] < 0)
-//				{
-//					System.out.println("Negative Weight Cycle Found!!");
-//					printMatrix(cost);
-//					System.out.println("------------------------------");
-//					printMatrix(path);
-//					return;
-//				}
-			}
-		printMatrix(cost);
-		System.out.println("------------------------------");
-		printMatrix(path);
-		// Print the shortest path between all pairs of vertices
-		//printSolution(cost, path, N);
-	}
-
-
 
 	public static void min_plus_multiplication(int num, double[][] myMatrix, double[][] temp_matrix)
 	{
@@ -465,8 +414,12 @@ public class main {
 						
 					}
 					System.out.println("Cycle Length: " + g);
-					System.out.println("asda"+w+"/"+paths[w][w]);
 					printPaths(w,paths[w][w],g,num);
+					System.out.println("asda"+"/"+paths[w][w]);
+					temp_list_of_cycle.add(paths[w][w]);
+					
+					
+					temp_list_of_cycle = new ArrayList<Integer>();
 					
 				}	
 			}
@@ -511,6 +464,7 @@ public class main {
 			temp_array = all_path.get(i);
 		}
 		System.out.println(start+" / "+temp_array[start][end]);
+		temp_list_of_cycle.add(temp_array[start][end]);
 		printPaths(start, temp_array[start][end], steps-1, num);
 	}
 	
