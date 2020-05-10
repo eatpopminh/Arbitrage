@@ -16,11 +16,14 @@ import javax.swing.text.html.HTMLDocument.Iterator;
 
 public class main {
 	final static int INF = Integer.MAX_VALUE;
-	
 	public static ArrayList<int[][]> all_path;
-	public static ArrayList<int[]> all_list_of_cycle;
+	
+	public static ArrayList<ArrayList<Integer>> cycle_with_biggest_profit;
+	public static double biggest_profit = 0;
+	
 	public static ArrayList<Integer> temp_list_of_cycle;
-	public static ArrayList<Integer> profit_per_trade;
+	public static ArrayList<Integer> price;
+	
 	public static int[][] OG_matrix = {		{0,0,0,0,0},
 											{0,0,5,2,INF},
 											{0,-8,0,1,INF},
@@ -29,9 +32,9 @@ public class main {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		all_path = new ArrayList<int[][]>();
-		all_list_of_cycle = new ArrayList<int[]>();
+		cycle_with_biggest_profit = new ArrayList<ArrayList<Integer>>();
 		temp_list_of_cycle = new ArrayList<Integer>();
-		profit_per_trade = new ArrayList<Integer>();
+		price = new ArrayList<Integer>();
 		
 		
 		
@@ -119,6 +122,8 @@ public class main {
 					temp_matrix[i][j] = 0;
 			}
 		min_plus_multiplication(4, myMatrix7, temp_matrix);
+		System.out.println(cycle_with_biggest_profit);
+		System.out.println(biggest_profit);
 		//printPaths(1,2,5,num);
 		
 		
@@ -414,12 +419,16 @@ public class main {
 						
 					}
 					System.out.println("Cycle Length: " + g);
-					printPaths(w,paths[w][w],g,num);
-					System.out.println("asda"+"/"+paths[w][w]);
 					temp_list_of_cycle.add(paths[w][w]);
+					printPaths(w,paths[w][w],g,num);
+					temp_list_of_cycle.add(0,w);
+					System.out.println("First: " + w + " -> " +paths[w][w]);
 					
+					//price.add(OG_matrix[w][w]);
 					
+					calculate_price();
 					temp_list_of_cycle = new ArrayList<Integer>();
+					price = new ArrayList<Integer>();
 					
 				}	
 			}
@@ -446,7 +455,13 @@ public class main {
 //			printMatrix(all_path.get(i));
 //		}
 //		printMatrix(sol);
-		//printMatrix(paths);
+//		printMatrix(paths);
+		for(int i = 0 ; i<all_path.size();i++)
+		{
+			int[][] temp = all_path.get(i);
+			System.out.println();
+			printMatrix(temp);
+		}
 	
 	
 	}
@@ -454,18 +469,57 @@ public class main {
 	{
 		if(steps<0 )//|| start==end)
 		{
-			//System.out.println(end);
 			return;
 		}
 		int last_index = -1;
 		int[][] temp_array = new int[num+1][num+1];
-		for(int i = 0 ; i<steps ; i++)
+		for(int i = 0 ; i<steps-1 ; i++)
 		{
 			temp_array = all_path.get(i);
 		}
-		System.out.println(start+" / "+temp_array[start][end]);
+		System.out.println("^^^ "+temp_array[start][end]);
 		temp_list_of_cycle.add(temp_array[start][end]);
+		//price.add(OG_matrix[start][end]);
 		printPaths(start, temp_array[start][end], steps-1, num);
+	}
+	public static void calculate_price()
+	{
+
+		System.out.println(temp_list_of_cycle);
+		for(int  i = 0 ; i<temp_list_of_cycle.size()-1 ; i++)
+		{
+			price.add(OG_matrix[temp_list_of_cycle.get(i)][temp_list_of_cycle.get(i+1)]);
+		}
+		System.out.println("BOB: "+ price);
+		int price_size = price.size();
+		for(int i = 0 ; i<price_size ; i++)
+		{
+			if(price.get(i)==0)
+			{
+				price.remove(i);
+				i=i-1;
+				price_size = price.size();
+			}
+		}
+		System.out.println("BOB2: "+ price);
+		double first = price.get(0);
+		for(int i  = 1 ; i<price.size() ; i++)
+		{
+			
+			first*=price.get(i);
+			
+		}
+		double priceSize=price.size();
+		double nth = (1/priceSize);
+		
+		double temp = Math.pow(first, nth);
+		if(temp>biggest_profit)
+		{
+			cycle_with_biggest_profit.clear();
+			biggest_profit = temp;
+			cycle_with_biggest_profit.add(temp_list_of_cycle);
+		}
+		
 	}
 	
 
