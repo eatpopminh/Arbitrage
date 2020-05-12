@@ -168,7 +168,25 @@ public class main {
 		System.out.println("BEST CYCLE");
 		System.out.println(cycle_with_biggest_profit);
 		System.out.println(biggest_profit);
+
 		
+		ArrayList<Integer> FINAL_ANSWER = new ArrayList<Integer>();
+		int start = cycle_with_biggest_profit.get(0).get(1);
+		FINAL_ANSWER.add(start);
+		for(int i = 2 ; i < cycle_with_biggest_profit.get(0).size() ; i++)
+		{
+			if(start==(cycle_with_biggest_profit.get(0).get(i)))
+			{
+				break;	
+			}
+			FINAL_ANSWER.add(cycle_with_biggest_profit.get(0).get(i));
+		}
+		FINAL_ANSWER.add(start);
+		System.out.println("FINAL ANSWER");
+		for(int i = 0 ;i<cycle_with_biggest_profit.size() ; i++)
+		{
+			System.out.println(FINAL_ANSWER);
+		}
 		
 //		System.out.println("1 Trade: " + OG_matrix[118][169]);
 //		System.out.println("2 Trade: " + OG_matrix[169][265]);
@@ -239,9 +257,9 @@ public class main {
 		
 		//File writer
 		FileWriter write = new FileWriter("output.txt");
-		for(int i  = cycle_with_biggest_profit.get(0).size()-1 ; i>0 ; i--)
+		for(int i  = FINAL_ANSWER.size()-1 ; i>=0 ; i--)
 		{
-			write.write(Integer.toString(cycle_with_biggest_profit.get(0).get(i)) + "\n");
+			write.write(Integer.toString(FINAL_ANSWER.get(i)) + "\n");
 		}
 
         write.close();
@@ -401,15 +419,15 @@ public class main {
 		double temp = Math.pow(first, nth);
 		System.out.println(temp);
 		
-//		if(temp<1)
-//		{
+
+		
 			if(temp>biggest_profit)
 			{
 				cycle_with_biggest_profit.clear();
 				biggest_profit = temp;
 				cycle_with_biggest_profit.add(temp_list_of_cycle);
 			}
-//		}
+
 		
 	}
 	public static void printPaths2_double(int start, int end, int steps, int num)
