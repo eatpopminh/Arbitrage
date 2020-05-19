@@ -1,6 +1,7 @@
 //Final exam
 //Done
 //Arbitrage
+//Works with double and int
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
